@@ -82,12 +82,11 @@ a{color:inherit;text-decoration:none}#bg{position:fixed;inset:0;width:100%;heigh
 @media(min-width:721px){.stmt .h{font-size:calc(var(--u)*4.8);max-width:none}.about .h{font-size:calc(var(--u)*4.2)}.wt .h{font-size:calc(var(--u)*3.7)}.stats .h{font-size:calc(var(--u)*3.4)}.contact .h{font-size:calc(var(--u)*4.6)}.num{font-size:calc(var(--u)*3.6)}.p{font-size:max(12px,calc(var(--u)*.9))}.about .p{font-size:max(12px,calc(var(--u)*.9))}}
 .lk.go{flex-direction:column;align-items:flex-start;gap:8px;margin-top:14px}
 .lk .hint{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--blue);font-weight:500}
-.lk .hint svg{width:16px;height:20px;fill:none;stroke:var(--blue);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:nudge 1.5s ease-in-out infinite}
+.lk .hint svg{width:16px;height:20px;fill:none;stroke:var(--blue);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .lk.go a{position:relative;padding:11px 22px;font-size:13px;font-weight:500;box-shadow:0 8px 22px rgba(var(--pc),.35)}
-.lk.go a::after{content:"";position:absolute;inset:-4px;border-radius:99px;border:1.5px solid rgba(var(--pc),.5);animation:ring2 2.2s ease-out infinite;pointer-events:none}
+.lk.go a::after{content:"";position:absolute;inset:-4px;border-radius:99px;border:1.5px solid rgba(var(--pc),.5);pointer-events:none;transform:scale(calc(.96 + var(--rg,0)*.16),calc(.96 + var(--rg,0)*.54));opacity:calc(1 - var(--rg,0))}
 @keyframes nudge{0%,100%{transform:translateY(-5px);opacity:.45}50%{transform:translateY(4px);opacity:1}}
 @keyframes ring2{from{transform:scale(.96);opacity:1}to{transform:scale(1.12,1.5);opacity:0}}
-@media (prefers-reduced-motion:reduce){.lk .hint svg,.lk.go a::after{animation:none}}
 </style></head><body>
 <canvas id="bg"></canvas>
 <div id="ui"><div class="stage">
@@ -141,17 +140,17 @@ a{color:inherit;text-decoration:none}#bg{position:fixed;inset:0;width:100%;heigh
 <div class="cl t fz"><a href="mailto:tu.infowork@gmail.com">tu.infowork@gmail.com</a><a href="tel:0345933044">0345 933 044</a><a href="https://fb.com/trungtubmt" target="_blank" rel="noopener">fb.com/trungtubmt</a><span>Phú Nhuận, TP. Hồ Chí Minh</span></div></section>
 <div id="lb"><img alt=""></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script><script>window.THREE||document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><script>window.gsap||document.write('<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script><script>window.ScrollTrigger||document.write('<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"><\/script>')</script>
 <script>
 (function(){
 var $=function(s){return document.querySelector(s)},$$=function(s){return[].slice.call(document.querySelectorAll(s))};
 /* lightbox */
 var lb=$('#lb'),li=lb.querySelector('img');$$('.gl img').forEach(function(i){i.onclick=function(){li.src=i.src;lb.classList.add('on')}});lb.onclick=function(){lb.classList.remove('on')};
 /* nền hạt 3D (Three.js): biến hình liên tục theo từng phần */
-var cv=$('#bg'),N=innerWidth<720?4500:9000,TAU=6.2832,r=Math.random,S=0,still=matchMedia('(prefers-reduced-motion:reduce)').matches,tt=0,mx=0,my=0,sp=0;
-var RN=new THREE.WebGLRenderer({canvas:cv,alpha:true}),sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,50),grp=new THREE.Group();cam.position.z=4.4;
+var cv=$('#bg'),N=innerWidth<720?4500:9000,TAU=6.2832,r=Math.random,S=0,still=/[?&]still\b/.test(location.search),tt=0,mx=0,my=0,sp=0;
+var RN;try{RN=new THREE.WebGLRenderer({canvas:cv,alpha:true})}catch(e){console.warn('WebGL không khả dụng, bỏ qua hạt 3D',e);cv.style.display='none';RN={setPixelRatio:function(){},setSize:function(){},getPixelRatio:function(){return 1},render:function(){}}}var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,50),grp=new THREE.Group();cam.position.z=4.4;
 var pos=new Float32Array(N*3),tg=new Float32Array(N*3),sd=new Float32Array(N),U=[];
 for(var i=0;i<N;i++){U.push([r(),r(),r()]);sd[i]=r();pos[i*3]=(r()-.5)*7;pos[i*3+1]=(r()-.5)*5;pos[i*3+2]=(r()-.5)*4}
 var geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('s',new THREE.BufferAttribute(sd,1));
@@ -224,4 +223,10 @@ function goal(h){var k={'#about':'about','#career':'career','#work':'work','#sta
 $$('#ui a,.hero .cta').forEach(function(l){l.addEventListener('click',function(e){var h=l.getAttribute('href');if(!h||h.charAt(0)!=='#')return;e.preventDefault();var y=h==='#top'?0:goal(h);if(y==null){var el=$(h);y=el?el.getBoundingClientRect().top+scrollY:0}scrollTo({top:Math.max(0,y),behavior:'smooth'})})});
 addEventListener('load',function(){ScrollTrigger.refresh()});
 })();
-</script></body></html>
+</script><script>/* build v6: mũi tên chạy bằng JS, không phụ thuộc cài đặt animation của CSS */
+(function(){var hs=document.querySelectorAll('.lk .hint svg'),as=document.querySelectorAll('.lk.go a');if(!hs.length)return;var t0=performance.now();
+function f(now){var d=now-t0,w=.5-.5*Math.cos((d/1500)%1*2*Math.PI),r=(d/2200)%1,i;
+for(i=0;i<hs.length;i++){hs[i].style.transform='translateY('+(-5+9*w).toFixed(2)+'px)';hs[i].style.opacity=(.45+.55*w).toFixed(2)}
+for(i=0;i<as.length;i++)as[i].style.setProperty('--rg',r.toFixed(3));requestAnimationFrame(f)}requestAnimationFrame(f)})();
+</script>
+</body></html>
